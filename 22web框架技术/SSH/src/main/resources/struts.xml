@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+
+    <package name="ssh" extends="struts-default" strict-method-invocation="false">
+                                    <!--全局字段-->
+        <global-results>
+            <result name="error">/error.jsp</result>
+        </global-results>
+
+                                    <!--User-->
+
+        <!--登录使用，传入username 和 password进行登录校验-->
+        <action name="login" class="SSH.action.UserAction" method="login">
+            <result name="success">/main.jsp</result>
+            <result name="input">/login.jsp</result>
+        </action>
+        <!--注册账号使用  传入user对象-->
+        <action name="register" class="SSH.action.UserAction" method="register">
+            <result name="success">/login.jsp</result>
+            <result name="input">/login.jsp</result>
+        </action>
+        <!--根据id获取User 不需要参数，直接调用    返回User   session.setAttribute("UserInfo",user); //初始化时已经调用-->
+        <action name="getUser" class="SSH.action.UserAction" method="getUserInfo">
+            <result name="success">/main.jsp</result>
+        </action>
+        <!--修改User   传入user对象-->
+        <action name="saveUser" class="SSH.action.UserAction" method="saveUser">
+                <result name="success">/main.jsp</result>
+                <result name="input">/userUpdate.jsp</result>
+        </action>
+        <!--修改用户信息-->
+        <action name="saveUserWithoutPassword" class="SSH.action.UserAction" method="saveUserWithoutPassword">
+            <result name="success">/main.jsp</result>
+            <result name="input">/userUpdate.jsp</result>
+        </action>
+        <!--修改密码-->
+        <action name="updatePassword" class="SSH.action.UserAction" method="updatePassword">
+            <result name="success">/main.jsp</result>
+            <result name="input">/userPassword.jsp</result>
+        </action>
+        <!--退出登录 直接调用-->
+        <action name="logout" class="SSH.action.UserAction" method="logout">
+            <result name="success">/login.jsp</result>
+        </action>
+        <!--刷新数据 无参数-->
+        <action name="refreshUser" class="SSH.action.UserAction" method="refresh">
+            <result name="success">/userUpdate.jsp</result>
+        </action>
+
+                                     <!--Types-->
+
+        <!--查询所有类型。无参数，返回session  List<Types> session.setAttribute("Types",types);-->
+        <action name="getTypes" class="SSH.action.TypesAction" method="getAllTypes">
+            <result name="success">/movieCategory.jsp</result>
+        </action>
+        <!--通过id查询type，提交id,  返回type对象session.setAttribute("oneType", oneType);-->
+        <action name="getTypeById" class="SSH.action.TypesAction" method="getTypeById">
+            <result name="success">/movieCategory.jsp</result>
+        </action>
+        <!--增加type ，提交type字段，不提交id 使用后请更新界面-->
+        <action name="addType" class="SSH.action.TypesAction" method="addType">
+            <result name="success">/movieCategory.jsp</result>
+            <result name="input">/movieCategory.jsp</result>
+        </action>
+        <!--更新type，提交id和type字段 使用后请更新界面-->
+        <action name="updateType" class="SSH.action.TypesAction" method="saveType">
+            <result name="success">/movieCategory.jsp</result>
+            <result name="input">/movieCategory.jsp</result>
+        </action>
+        <!--删除type，提交id 使用后请更新界面-->
+        <action name="deleteType" class="SSH.action.TypesAction" method="deleteType">
+            <result name="success">/movieCategory.jsp</result>
+            <result name="input">/movieCategory.jsp</result>
+        </action>
+        <!--刷新数据 无参数-->
+        <action name="refreshType" class="SSH.action.TypesAction" method="refresh">
+            <result name="success">/movieCategory.jsp</result>
+        </action>
+
+
+                                    <!--News-->
+        <!--获取所有新闻 无参数 返回session List<News> session.setAttribute("News",news);-->
+        <action name="getNews" class="SSH.action.NewsAction" method="getAllNews">
+            <result name="success">/success.jsp</result>
+        </action>
+        <!--增加新闻，传入新闻对象 无返回;请更新界面-->
+        <action name="addNews" class="SSH.action.NewsAction" method="addNews">
+            <result name="success">/newsUpload.jsp</result>
+            <result name="input">/newsUpload.jsp</result>
+        </action>
+        <!--获取一个新闻 传入新闻id 返回session session.setAttribute("oneNews", news);;-->
+        <action name="getNewsById" class="SSH.action.NewsAction" method="getNewsById">
+            <result name="success">/newsInfo.jsp</result>
+            <result name="input">/newsManagement.jsp</result>
+        </action>
+        <action name="getNewsByKey" class="SSH.action.NewsAction" method="getNewsByKey">
+            <result name="success">/newsManagementResult.jsp</result>
+            <result name="input">/newsManagement.jsp</result>
+        </action>
+        <!--删除新闻使用 传入新闻id 无返回;请更新界面-->
+        <action name="deleteNews" class="SSH.action.NewsAction" method="deleteNews">
+            <result name="success">/newsManagement.jsp</result>
+            <result name="input">/newsManagement.jsp</result>
+        </action>
+        <!--更新新闻使用 传入新闻对象 无返回;请更新界面-->
+        <action name="updateNews" class="SSH.action.NewsAction" method="saveNews">
+            <result name="success">/newsManagement.jsp</result>
+            <result name="input">/newsManagement.jsp</result>
+        </action>
+        <!--刷新数据 无参数-->
+        <action name="refreshNews" class="SSH.action.NewsAction" method="refresh">
+            <result name="success">/success.jsp</result>
+        </action>
+
+                                         <!--Film-->
+        <!--查询所有电影   无参数 List<Film> session.setAttribute("Films",films);-->
+        <action name="getAllFilm" class="SSH.action.FilmAction" method="getAllFilm">
+            <result name="success">/success.jsp</result>
+        </action>
+        <!--根据id查找电影     Film session.setAttribute("Film",oneFilm);-->
+        <action name="getFilmById" class="SSH.action.FilmAction" method="getFilmById">
+            <result name="success">/movieInfo.jsp</result>
+            <result name="input">/movieManagement.jsp</result>
+        </action>
+        <!--根据名字查找电影   参数为name session.setAttribute("Film",FilmsByName);-->
+        <action name="getFilmByName" class="SSH.action.FilmAction" method="getFilmByName">
+            <result name="success">/movieManagementResult.jsp</result>
+            <result name="input">/movieManagement.jsp</result>
+        </action>
+        <!--增加电影，传入电影对象除了图片  需要传入图片请首先单独调用uploadAction，先将图片url存入session-->
+        <action name="addFilm" class="SSH.action.FilmAction" method="addFilm">
+            <result name="success">/movieManagement.jsp</result>
+            <result name="input">/addMovie.jsp</result>
+        </action>
+        <!--根据电影类别查找 参数为type session.setAttribute("Film",FilmsByType);-->
+        <action name="getFilmsByType" class="SSH.action.FilmAction" method="getFilmsByType">
+            <result name="success">/movieManagementResult.jsp</result>
+            <result name="input">/movieManagement.jsp</result>
+        </action>
+        <!--修改电影，传入电影对象 无返回;请更新界面-->
+        <action name="updateFilm" class="SSH.action.FilmAction" method="saveFilm">
+            <result name="success">/movieManagement.jsp</result>
+            <result name="input">/movieInfo.jsp</result>
+        </action>
+        <!--删除电影，传入电影id 无返回;请更新界面-->
+        <action name="deleteFilmById" class="SSH.action.FilmAction" method="deleteFilmById">
+            <result name="success">/movieManagement.jsp</result>
+            <result name="input">/movieManagement.jsp</result>
+        </action>
+<!--        getFilmByIdOrNameOrDirect.action-->
+        <action name="getFilmByKey" class="SSH.action.FilmAction" method="getFilmByKey">
+            <result name="success">/movieManagementResult.jsp</result>
+            <result name="input">/movieManagement.jsp</result>
+        </action>
+        <!--刷新数据 无参数-->
+        <action name="refreshFilm" class="SSH.action.FilmAction" method="refresh">
+            <result name="success">/movieManagement.jsp</result>
+        </action>
+
+                                    <!--uploadAction-->
+        <!--上传图片时单独调用，建议提交电影时调用两个动作-->
+        <action name="upload" class="SSH.action.uploadAction" method="upload">
+            <result name="success">/success.jsp</result>
+        </action>
+
+  </package>
+</struts>

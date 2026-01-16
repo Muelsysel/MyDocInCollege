@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+">
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/web?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai"/>
+        <property name="user" value="root"/>
+        <property name="password" value="242648"/>
+    </bean>
+    
+    <!-- hibernate 配置 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+                <prop key="show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+        <property name="mappingLocations" value="classpath:*.hbm.xml"/>
+    </bean>
+
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- baen   User-->
+    <bean id="userDao" class="SSH.dao.UserDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="SSH.service.impl.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <bean id="userAction" class="SSH.action.UserAction">
+        <property name="userServiceImpl" ref="userServiceImpl"/>
+        <property name="filmServiceImpl" ref="filmServiceImpl"/>
+        <property name="typesServiceImpl" ref="typesServiceImpl"/>
+        <property name="newsServiceImpl" ref="newsServiceImpl"/>
+    </bean>
+
+    <!--bean   Types-->
+    <bean id="typesDao" class="SSH.dao.TypesDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    <bean id="typesServiceImpl" class="SSH.service.impl.TypesServiceImpl">
+        <property name="typesDao" ref="typesDao"/>
+    </bean>
+    <bean id="typesAction" class="SSH.action.TypesAction">
+        <property name="typesServiceImpl" ref="typesServiceImpl"/>
+    </bean>
+
+    <!--bean   Film-->
+    <bean id="filmDao" class="SSH.dao.FilmDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    <bean id="filmServiceImpl" class="SSH.service.impl.FilmServiceImpl">
+        <property name="filmDao" ref="filmDao"/>
+    </bean>
+    <bean id="filmAction" class="SSH.action.FilmAction">
+        <property name="filmServiceImpl" ref="filmServiceImpl"/>
+    </bean>
+    <!--bean  news-->
+    <bean id="newsDao" class="SSH.dao.NewsDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    <bean id="newsServiceImpl" class="SSH.service.impl.NewsServiceImpl">
+        <property name="newsDao" ref="newsDao"/>
+    </bean>
+    <bean id="newsAction" class="SSH.action.NewsAction">
+        <property name="newsServiceImpl" ref="newsServiceImpl"/>
+    </bean>
+
+        <!--阿里云配置-->
+    <bean id="aliOssUtil" class="SSH.utils.AliOssUtil">
+        <constructor-arg index="0" value=""/>
+        <constructor-arg index="1" value=""/>
+        <constructor-arg index="2" value=""/>
+        <constructor-arg index="3" value=""/>
+        <property name="endpoint" value="oss-cn-beijing.aliyuncs.com"/>
+        <property name="accessKeyId" value="LTAI5tGZXqUxr8BQoeFUgywN"/>
+        <property name="accessKeySecret" value="reMjcRFccmNPMgaod0rPGO2MxCqEZ2"/>
+        <property name="bucketName" value="web-muelsyse"/>
+    </bean>
+    <bean id="uploadAction" class="SSH.action.uploadAction">
+        <property name="aliOssUtil" ref="aliOssUtil"/>
+    </bean>
+
+
+
+
+    <!-- 事务管理类 -->
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- 事务管理 -->
+    <tx:advice id="txAdvicd" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="save*" read-only="false"/>
+            <tx:method name="update*" read-only="false"/>
+            <tx:method name="delete*" read-only="false"/>
+            <tx:method name="*" read-only="false"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- Aop -->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="pt" expression="execution(* SSH.service.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvicd" pointcut-ref="pt"/>
+    </aop:config>
+</beans>

@@ -92,8 +92,8 @@
         <constructor-arg index="2" value=""/>
         <constructor-arg index="3" value=""/>
         <property name="endpoint" value="oss-cn-beijing.aliyuncs.com"/>
-        <property name="accessKeyId" value="LTAI5tGZXqUxr8BQoeFUgywN"/>
-        <property name="accessKeySecret" value="reMjcRFccmNPMgaod0rPGO2MxCqEZ2"/>
+        <property name="accessKeyId" value=""/>
+        <property name="accessKeySecret" value=""/>
         <property name="bucketName" value="web-muelsyse"/>
     </bean>
     <bean id="uploadAction" class="SSH.action.uploadAction">
